@@ -1,3 +1,9 @@
+---
+title: Semantic_Book_Recommender
+app_file: gradio-dashboard.py
+sdk: gradio
+sdk_version: 4.44.1
+---
 # LLM Book Recommender
 
 This project explores a dataset of books with metadata to build a book recommendation system using LLMs.
