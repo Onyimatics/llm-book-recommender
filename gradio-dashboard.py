@@ -1,3 +1,7 @@
+import os
+import pickle
+import hashlib
+from pathlib import Path
 import time
 import pandas as pd
 import numpy as np
@@ -13,6 +17,19 @@ import gradio as gr
 
 load_dotenv()
 
+# Define cache directory
+CACHE_DIR = Path("cache")
+CACHE_DIR.mkdir(exist_ok=True)
+
+
+# Function to generate a cache key based on document content
+def generate_cache_key(documents):
+    content_hash = hashlib.md5()
+    for doc in documents:
+        content_hash.update(doc.page_content.encode())
+    return content_hash.hexdigest()
+
+
 # Load books
 books = pd.read_csv("books_with_emotions.csv")
 books["large_thumbnail"] = books["thumbnail"] + "&fife=w800"
@@ -27,11 +44,24 @@ raw_documents = TextLoader("tagged_description.txt").load()
 text_splitter = CharacterTextSplitter(separator="\n", chunk_size=0, chunk_overlap=0)
 documents = text_splitter.split_documents(raw_documents)
 
-# Batching function
+
+# Batching function with caching
 def batch_process_documents(documents: list[Document], batch_size: int = 200, sleep_time: int = 65) -> Chroma:
     """
     Process documents in smaller batches with built-in rate limiting.
+    Uses caching to avoid reprocessing when possible.
     """
+    # Generate a cache key based on document content
+    cache_key = generate_cache_key(documents)
+    chroma_path = CACHE_DIR / f"chroma_{cache_key}"
+
+    # Check if cached Chroma DB exists
+    if chroma_path.exists():
+        print(f"Loading cached embeddings from {chroma_path}")
+        embeddings = OpenAIEmbeddings()
+        return Chroma(persist_directory=str(chroma_path), embedding_function=embeddings)
+
+    print("No cache found. Processing documents...")
     embeddings = OpenAIEmbeddings()
 
     if not documents:
@@ -43,7 +73,8 @@ def batch_process_documents(documents: list[Document], batch_size: int = 200, sl
     print(f"Processing initial batch: {start_idx} to {end_idx}")
     db = Chroma.from_documents(
         documents[start_idx:end_idx],
-        embedding=embeddings
+        embedding=embeddings,
+        persist_directory=str(chroma_path)
     )
 
     while end_idx < len(documents):
@@ -56,11 +87,13 @@ def batch_process_documents(documents: list[Document], batch_size: int = 200, sl
         print(f"Adding batch: {start_idx} to {end_idx}")
         db.add_documents(documents[start_idx:end_idx])
 
-    print("Finished processing all documents.")
+    print(f"Finished processing all documents. Cached at {chroma_path}")
     return db
 
-# Create database using batching
+
+# Create database using batching (now with caching)
 db_books = batch_process_documents(documents)
+
 
 # Functions
 def retrieve_semantic_recommendations(
@@ -70,7 +103,6 @@ def retrieve_semantic_recommendations(
         initial_top_k: int = 50,
         final_top_k: int = 16,
 ) -> pd.DataFrame:
-
     recs = db_books.similarity_search(query, k=initial_top_k)
     books_list = [int(rec.page_content.strip('"').split()[0]) for rec in recs]
     book_recs = books[books["isbn13"].isin(books_list)].head(initial_top_k)
@@ -119,6 +151,7 @@ def recommend_books(
         results.append((row["large_thumbnail"], caption))
     return results
 
+
 # Gradio UI
 categories = ["All"] + sorted(books["simple_categories"].unique())
 tones = ["All"] + ["Happy", "Surprising", "Angry", "Suspenseful", "Sad"]
@@ -143,5 +176,3 @@ with gr.Blocks(theme=gr.themes.Glass()) as dashboard:
 # Launch app
 if __name__ == "__main__":
     dashboard.launch()
-
-
