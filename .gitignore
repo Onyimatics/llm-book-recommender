@@ -44,8 +44,8 @@ ehthumbs.db
 Thumbs.db
 
 # Large data files
-*.csv
-!books_cleaned.csv
+#*.csv
+#!books_cleaned.csv
 *.xlsx
 *.xls
 *.zip
