@@ -7,9 +7,6 @@
   <a href="https://huggingface.co/spaces/Onyimatics/Semantic_Book_Recommender">
     <img alt="HuggingFace Spaces" src="https://img.shields.io/badge/Deployed%20on-Hugging%20Face-blue?logo=huggingface&style=flat-square">
   </a>
-  <a href="https://github.com/Onyimatics/llm-book-recommender/actions">
-    <img alt="GitHub Actions Build" src="https://github.com/Onyimatics/llm-book-recommender/actions/workflows/main.yml/badge.svg">
-  </a>
   <a href="https://github.com/Onyimatics/llm-book-recommender/stargazers">
     <img alt="GitHub Stars" src="https://img.shields.io/github/stars/Onyimatics/llm-book-recommender?style=social">
   </a>
