@@ -11,13 +11,13 @@
     <img alt="GitHub Stars" src="https://img.shields.io/github/stars/Onyimatics/llm-book-recommender?style=social">
   </a>
   <a href="https://github.com/Onyimatics/llm-book-recommender/fork">
-    <img alt="GitHub Forks" src="https://img.shields.io/github/forks/Onyimatics/llm-book-recommender?style=social">
+    <img alt="GitHub Forks" src="https://img.shields.io/github/forks/onyimatics/llm-book-recommender?style=social">
   </a>
-  <a href="https://github.com/Onyimatics/llm-book-recommender/issues">
-    <img alt="GitHub Issues" src="https://img.shields.io/github/issues/Onyimatics/llm-book-recommender?style=flat-square">
+  <a href="https://github.com/Onyimatics/llm-book-recommender/last-commit">
+    <img alt="GitHub Issues" src="https://img.shields.io/github/last-commit/onyimatics/llm-book-recommender?style=flat-square">
   </a>
   <a href="https://opensource.org/licenses/MIT">
-    <img alt="MIT License" src="https://img.shields.io/github/license/Onyimatics/llm-book-recommender?color=blue&style=flat-square">
+    <img alt="MIT License" src="https://img.shields.io/github/license/onyimatics/llm-book-recommender?color=blue&style=flat-square">
   </a>
 </p>
 
