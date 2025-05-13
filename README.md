@@ -1,3 +1,10 @@
+---
+title: Semantic Book Recommender
+emoji: 📚
+app_file: gradio-dashboard.py
+sdk: gradio
+---
+
 # Semantic Book Recommender
 
 <p align="center">
